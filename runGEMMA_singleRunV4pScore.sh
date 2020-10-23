@@ -208,9 +208,9 @@ else
 	fi
     elif [ "$ENV" != "NULL" ]; then
 	if [ "$SNPS" != "NONE" ]; then
-	    prog/gemma.linux -bfile run${YEAR}_v${version}/$PHE1/${OUT} -k $K -lmm 3 -o $OUT -c run${YEAR}_v${version}/$PHE1/${OUT}.cov -n `seq 1 $n` -maf 0 -miss -miss 1 -r2 1 -snps $SNPS -gxe run${YEAR}_v${version}/${PHE1}/${OUT}.env >> nohups/$OUT 2>&1
+	    prog/gemma.linux -bfile run${YEAR}_v${version}/$PHE1/${OUT} -k $K -lmm 3 -o $OUT -c run${YEAR}_v${version}/$PHE1/${OUT}.cov -n `seq 1 $n` -maf 0 -miss 1 -r2 1 -snps $SNPS -gxe run${YEAR}_v${version}/${PHE1}/${OUT}.env >> nohups/$OUT 2>&1
 	else
-	    prog/gemma.linux -bfile run${YEAR}_v${version}/$PHE1/${OUT} -k $K -lmm 3 -o $OUT -c run${YEAR}_v${version}/$PHE1/${OUT}.cov -n `seq 1 $n` -maf 0 -miss -miss 1 -r2 1 -gxe run${YEAR}_v${version}/${PHE1}/${OUT}.env >> nohups/$OUT 2>&1
+	    prog/gemma.linux -bfile run${YEAR}_v${version}/$PHE1/${OUT} -k $K -lmm 3 -o $OUT -c run${YEAR}_v${version}/$PHE1/${OUT}.cov -n `seq 1 $n` -maf 0 -miss 1 -r2 1 -gxe run${YEAR}_v${version}/${PHE1}/${OUT}.env >> nohups/$OUT 2>&1
 	fi
     else
 	if [ "$SNPS" != "NONE" ]; then
