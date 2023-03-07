@@ -1,0 +1,59 @@
+
+
+load R like this:
+
+module load tools
+module load R/3.1.2
+module load gemma/0.94.1
+
+For actually generating gemma output run script (that calls gemma) in data directory (and do not put any folder in gemma output)
+other directories there is not permission to write apparently
+
+look at what is in runBBH script
+
+do interative testing of your script like this:
+
+module load moab torque
+
+qsub -W group_list=emijor -A cu_10048 -I people/emijor/runBBH.sh
+
+run with this command:
+
+qsub -W group_list=emijor -A cu_10048 -l nodes=1:ppn=4:thinnode,walltime=2:00:00 /home/people/emijor/project/people/emijor/runBBH.sh
+
+To run a script on one node using 4 cores, each thinnode (nodes) has 28 cores, so if 36 cores are needed nodes=2:ppn36
+if walltime is not specified a default runtime of 1 h is allocated, memory does not have to be specified
+
+walltime is STRICT, if your script goes beyond this it is killed!
+
+### 
+
+If you run processes in the background, be aware that they are killed if parent script is done (submitted all these analyzes)
+
+To get around this job arrays should be used:
+
+Some different stuff should be declared in the beginning of script (see /home/projects/cu_10048/people/emijor/prepAllCohorts.sh for an example)
+
+Where a $PBS_ARRAYID is passed to each process (when running script) and when submitting: qsub <script> (-t can be declared inside script)
+
+###
+
+So the trick is to see the whole jobArray script as inside one big foor loop where $PBS_ARRAYID is the counter.
+
+So more or less produce a file with all the arguments you want to run (prepdescription_impu2016_v3.txt),
+so one line for each run and then extract the i'th line (via $PBS_ARRAYID which is your i).
+And extract all the arguments that this line contains and feed these to all the commands you want to execute in the script.
+
+When submitting an jobArray for smart usage of the nodes (pay per node) there is the % option, 
+which tells you how many processes to run at once, for example -t 1-100%10, meaning 28 processes at a time which is 1 node
+
+Even further it should be noted that when doing a jobArray process you have to tell how many processes via the -t option,
+all subsequent flags (-l walltime,nodes,ppn,mem) will be PER SINGLE process then!!
+
+Each thinnode has 128 GB ram so if using the whole node one can safely assign 4 GB for each process as (4*28=112 GB).
+
+###
+
+And when you **** up a job this is what you do:
+
+mjobctl -c -w user=<someuser>
