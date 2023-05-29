@@ -10,6 +10,37 @@ if(l[5]!="NONE" & !(grepl("\\.gsm$",l[5]))){
     badSNPsFile<-commandArgs(trailingOnly=T)[5]
 }
 
+
+qqpemil<-function(x,ci=TRUE,add=FALSE,ylab="Observed log10(p-value)",xlab="Expected log10(p-value)",maxLogP,...){
+    x<-x[!is.na(x)]
+    if(!missing(maxLogP)){
+        x[x<10^-maxLogP]<-10^-maxLogP
+    }
+    N<-length(x)
+    chi1<-qchisq(1-x,1)
+    x<-sort(x)
+    lambda<-round(median(chi1)/qchisq(0.5,1),2)
+    e<- -log((1:N-0.5)/N,10)
+    if(add){
+        points(e,-log(x,10),...)
+    } else{
+        plot(e,-log(x,10),ylab=ylab,xlab=xlab,...)
+        abline(0,1,col=2,lwd=2)
+    }
+
+    ##title(paste("lambda=",lambda), cex=1.5)
+    mtext(paste0("lamdbda = ",lambda))
+
+    if(ci){
+        c95<-qbeta(0.95,1:N,N-(1:N)+1)
+        c05<-qbeta(0.05,1:N,N-(1:N)+1)
+        lines(e,-log(c95,10))
+        lines(e,-log(c05,10))
+    }
+}
+
+
+
 manPlot<-function(x,chr,pass,sign,main,collar=c("darkblue","#67a9cf","orange","grey")){
   keep<-!is.na(x)
   x<-x[keep]
